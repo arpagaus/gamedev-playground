@@ -1,0 +1,41 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+sourceCompatibility = 1.7
+version = '1.0'
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Quickstart', 'Implementation-Version': version
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.jme3:jme3-core:3.+'
+    compile 'com.jme3:jme3-desktop:3.+'
+    compile 'com.jme3:jme3-plugins:3.+'
+    compile 'com.jme3:jme3-effects:3.+'
+    compile 'com.jme3:jme3-blender:3.+'
+    //compile 'com.jme3:jme3-bullet:3.+'
+    compile 'com.jme3:jme3-lwjgl:3.+'
+    compile 'com.jme3:jme3-testdata:3.+'
+    compile 'com.google.guava:guava:18+'
+    
+    testCompile 'junit:junit:4.+'
+}
+
+test {
+    systemProperties 'property': 'value'
+}
+
+uploadArchives {
+    repositories {
+       flatDir {
+           dirs 'repos'
+       }
+    }
+}
