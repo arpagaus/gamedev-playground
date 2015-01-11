@@ -25,11 +25,14 @@ import com.jme3.post.filters.TranslucentBucketFilter;
 import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.shadow.CompareMode;
 import com.jme3.shadow.DirectionalLightShadowFilter;
 import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.system.NativeLibraryLoader;
+import com.jme3.texture.Texture;
 
 public class NibanApplication extends SimpleApplication {
   private final static int SHADOWMAP_SIZE = 2048;
@@ -49,7 +52,7 @@ public class NibanApplication extends SimpleApplication {
   public void simpleInitApp() {
     System.out.println(settings);
 
-    setDisplayStatView(false);
+    setDisplayStatView(true);
     setDisplayFps(true);
     cam.setFrustumFar(200);
     flyCam.setMoveSpeed(7);
@@ -73,6 +76,8 @@ public class NibanApplication extends SimpleApplication {
     material.setColor("Ambient", ColorRGBA.DarkGray);
     material.setBoolean("VertexLighting", false);
     // scene.setMaterial(material);
+
+    // makeToonish(scene);
 
     rootNode.attachChild(scene);
 
@@ -105,6 +110,24 @@ public class NibanApplication extends SimpleApplication {
     rootNode.attachChild(particleEmitter);
 
     initializeFilters(directionalLight);
+  }
+
+  private void makeToonish(Spatial spatial) {
+    if (spatial instanceof Node) {
+      Node node = (Node) spatial;
+      for (Spatial child : node.getChildren()) {
+        makeToonish(child);
+      }
+    } else if (spatial instanceof Geometry) {
+      Geometry geometry = (Geometry) spatial;
+      Material material = geometry.getMaterial();
+      if (material.getMaterialDef().getName().equals("Phong Lighting")) {
+        Texture colorRampTexture = assetManager.loadTexture("Textures/ColorRamp/toon.png");
+        colorRampTexture.setMinFilter(Texture.MinFilter.NearestNoMipMaps);
+        colorRampTexture.setMagFilter(Texture.MagFilter.Nearest);
+        material.setTexture("ColorRamp", colorRampTexture);
+      }
+    }
   }
 
   private void initializeFilters(DirectionalLight directionalLight) {
