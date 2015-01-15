@@ -9,6 +9,9 @@ MaterialDef HeterogenousFog {
         Float FogDensity;
         Float FogDistance;
         Texture3D NoiseTexture
+        Vector3 NoiseScale
+        Float Time
+        Vector3 WindDirection
     }
 
     Technique {
