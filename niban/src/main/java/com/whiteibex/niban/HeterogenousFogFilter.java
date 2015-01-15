@@ -20,6 +20,7 @@ import com.jme3.terrain.noise.basis.ImprovedNoise;
 import com.jme3.texture.Image;
 import com.jme3.texture.Image.Format;
 import com.jme3.texture.Texture.MagFilter;
+import com.jme3.texture.Texture.MinFilter;
 import com.jme3.texture.Texture.WrapAxis;
 import com.jme3.texture.Texture.WrapMode;
 import com.jme3.texture.Texture3D;
@@ -88,7 +89,7 @@ public class HeterogenousFogFilter extends FogFilter {
   }
 
   protected Texture3D getNoiseTexture() {
-    final int SIZE = 256;
+    final int SIZE = 128;
     final float SCALE = 8;
 
     float[] data = new float[SIZE * SIZE * SIZE];
@@ -129,6 +130,7 @@ public class HeterogenousFogFilter extends FogFilter {
     texture3d.setWrap(WrapAxis.S, WrapMode.MirroredRepeat);
     texture3d.setWrap(WrapAxis.T, WrapMode.MirroredRepeat);
     texture3d.setMagFilter(MagFilter.Bilinear);
+    texture3d.setMinFilter(MinFilter.NearestNoMipMaps);
     return texture3d;
   }
 
