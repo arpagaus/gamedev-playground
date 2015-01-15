@@ -20,7 +20,6 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.DepthOfFieldFilter;
-import com.jme3.post.filters.FogFilter;
 import com.jme3.post.filters.TranslucentBucketFilter;
 import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
@@ -144,9 +143,10 @@ public class NibanApplication extends SimpleApplication {
     ssaoFilter.setIntensity(2);
     ssaoFilter.setBias(0.2f);
 
-    FogFilter fogFilter = new FogFilter();
+    HeterogenousFogFilter fogFilter = new HeterogenousFogFilter();
     fogFilter.setFogColor(ColorRGBA.LightGray);
-    fogFilter.setFogDistance(100);
+    fogFilter.setFogDistance(50);
+    fogFilter.setFogDensity(0.7f);
 
     TranslucentBucketFilter translucentBucketFilter = new TranslucentBucketFilter();
 

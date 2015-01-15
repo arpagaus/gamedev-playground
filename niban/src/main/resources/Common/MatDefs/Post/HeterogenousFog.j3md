@@ -1,0 +1,22 @@
+MaterialDef HeterogenousFog {
+
+    MaterialParameters {
+        Int NumSamples
+        Int NumSamplesDepth
+        Texture2D Texture
+        Texture2D DepthTexture
+        Vector4 FogColor;
+        Float FogDensity;
+        Float FogDistance;
+        Texture3D NoiseTexture
+    }
+
+    Technique {
+        VertexShader GLSL100:   Common/MatDefs/Post/Post.vert
+        FragmentShader GLSL100: Common/MatDefs/Post/HeterogenousFog.frag
+
+        WorldParameters {
+            ViewProjectionMatrixInverse
+        }
+    }
+}

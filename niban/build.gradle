@@ -23,6 +23,7 @@ dependencies {
     //compile 'com.jme3:jme3-bullet:3.+'
     compile 'com.jme3:jme3-lwjgl:3.+'
     compile 'com.jme3:jme3-testdata:3.+'
+    compile 'com.jme3:jme3-terrain:3.+'
     compile 'com.google.guava:guava:18+'
     
     testCompile 'junit:junit:4.+'
