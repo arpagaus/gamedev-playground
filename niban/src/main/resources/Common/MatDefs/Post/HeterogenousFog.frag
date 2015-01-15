@@ -24,18 +24,15 @@ void main() {
   float depthVal = texture2D(m_DepthTexture, texCoord).r;
   
   float fogDepth = (2.0 * m_FrustumNearFar.x) / (m_FrustumNearFar.y + m_FrustumNearFar.x - depthVal * (m_FrustumNearFar.y - m_FrustumNearFar.x));
-
+  
   vec3 worldPosition = getPosition(depthVal, texCoord);
   float noiseVal = texture3D(m_NoiseTexture, worldPosition / SCALE).r;
-  
-  float fogFactorVertical = clamp(1.0 / 5.0 * worldPosition.y, 0.5, 1.0);
 
-  float fogDensity = m_FogDensity * noiseVal;
-  float fogFactor = exp(-fogDensity * fogDepth);
+  //float fogFactorVertical = clamp(1.0 / 5.0 * worldPosition.y, 0.5, 1.0);
+
+  float fogFactor = exp2( -m_FogDensity * m_FogDensity * fogDepth *  fogDepth * LOG2 );
   fogFactor = clamp(fogFactor, 0.0, 1.0);
   
-  gl_FragColor = mix(m_FogColor, texVal, fogFactor);
-  //gl_FragColor.r=noiseVal;
-  //gl_FragColor.g=noiseVal;
-  //gl_FragColor.b=noiseVal;
+  gl_FragColor = mix(m_FogColor, texVal, (fogFactor * 0.5) + (fogFactor * 0.5 * noiseVal));
+  //gl_FragColor = mix(m_FogColor, texVal, fogFactor);
 }
