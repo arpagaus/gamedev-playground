@@ -33,6 +33,7 @@ import com.jme3.util.BufferUtils;
  */
 public class HeterogenousFogFilter extends FogFilter {
 
+  protected int noiseTextureSize = 128;
   protected float time = 0;
   protected float speed = 1;
   protected Vector3f noiseScale = new Vector3f(1000, 200, 400);
@@ -44,6 +45,17 @@ public class HeterogenousFogFilter extends FogFilter {
 
   public HeterogenousFogFilter(ColorRGBA fogColor, float fogDensity, float fogDistance) {
     super(fogColor, fogDensity, fogDistance);
+  }
+
+  public int getNoiseTextureSize() {
+    return noiseTextureSize;
+  }
+
+  public void setNoiseTextureSize(int noiseTextureSize) {
+    this.noiseTextureSize = noiseTextureSize;
+    if (material != null) {
+      material.setTexture("NoiseTexture", getNoiseTexture());
+    }
   }
 
   public float getSpeed() {
@@ -89,24 +101,24 @@ public class HeterogenousFogFilter extends FogFilter {
   }
 
   protected Texture3D getNoiseTexture() {
-    final int SIZE = 128;
+    final int size = noiseTextureSize;
     final float SCALE = 8;
 
-    float[] data = new float[SIZE * SIZE * SIZE];
+    float[] data = new float[size * size * size];
     int count = 0;
 
-    for (int z = 0; z < SIZE; z++) {
-      for (int y = 0; y < SIZE; y++) {
-        for (int x = 0; x < SIZE; x++) {
+    for (int z = 0; z < size; z++) {
+      for (int y = 0; y < size; y++) {
+        for (int x = 0; x < size; x++) {
           float scale = SCALE;
 
-          float value = ImprovedNoise.noise(scale * x / SIZE, scale * y / SIZE, scale * z / SIZE) / (scale / SCALE);
+          float value = ImprovedNoise.noise(scale * x / size, scale * y / size, scale * z / size) / (scale / SCALE);
           scale = scale * 2;
-          value = value + (ImprovedNoise.noise(scale * x / SIZE, scale * y / SIZE, scale * z / SIZE) / (scale / SCALE));
+          value = value + (ImprovedNoise.noise(scale * x / size, scale * y / size, scale * z / size) / (scale / SCALE));
           scale = scale * 2;
-          value = value + (ImprovedNoise.noise(scale * x / SIZE, scale * y / SIZE, scale * z / SIZE) / (scale / SCALE));
+          value = value + (ImprovedNoise.noise(scale * x / size, scale * y / size, scale * z / size) / (scale / SCALE));
           scale = scale * 2;
-          value = value + (ImprovedNoise.noise(scale * x / SIZE, scale * y / SIZE, scale * z / SIZE) / (scale / SCALE));
+          value = value + (ImprovedNoise.noise(scale * x / size, scale * y / size, scale * z / size) / (scale / SCALE));
 
           data[count++] = value;
         }
@@ -125,7 +137,7 @@ public class HeterogenousFogFilter extends FogFilter {
     }
     buffer.rewind();
 
-    Texture3D texture3d = new Texture3D(new Image(Format.Luminance8, SIZE, SIZE, SIZE, new ArrayList<ByteBuffer>(Collections.singleton(buffer)), null, ColorSpace.Linear));
+    Texture3D texture3d = new Texture3D(new Image(Format.Luminance8, size, size, size, new ArrayList<ByteBuffer>(Collections.singleton(buffer)), null, ColorSpace.Linear));
     texture3d.setWrap(WrapAxis.R, WrapMode.MirroredRepeat);
     texture3d.setWrap(WrapAxis.S, WrapMode.MirroredRepeat);
     texture3d.setWrap(WrapAxis.T, WrapMode.MirroredRepeat);
@@ -138,6 +150,7 @@ public class HeterogenousFogFilter extends FogFilter {
   public void write(JmeExporter ex) throws IOException {
     super.write(ex);
     OutputCapsule oc = ex.getCapsule(this);
+    oc.write(noiseTextureSize, "noiseTextureSize", 128);
     oc.write(speed, "speed", 1);
     oc.write(noiseScale, "noiseScale", new Vector3f(1000, 200, 400));
     oc.write(windDirection, "windDirection", new Vector3f(1.0f, 0.5f, 0));
@@ -147,6 +160,7 @@ public class HeterogenousFogFilter extends FogFilter {
   public void read(JmeImporter im) throws IOException {
     super.read(im);
     InputCapsule ic = im.getCapsule(this);
+    noiseTextureSize = ic.readInt("noiseTextureSize", 128);
     speed = ic.readFloat("speed", 1);
     noiseScale = (Vector3f) ic.readSavable("noiseScale", new Vector3f(1000, 200, 400));
     windDirection = (Vector3f) ic.readSavable("windDirection", new Vector3f(1.0f, 0.5f, 0));
