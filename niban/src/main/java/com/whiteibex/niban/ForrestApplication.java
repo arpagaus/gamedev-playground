@@ -33,7 +33,7 @@ import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.system.NativeLibraryLoader;
 import com.jme3.texture.Texture;
 
-public class NibanApplication extends SimpleApplication {
+public class ForrestApplication extends SimpleApplication {
   private final static int SHADOWMAP_SIZE = 2048;
 
   public static void main(String[] args) {
@@ -41,18 +41,18 @@ public class NibanApplication extends SimpleApplication {
     extractionFolder.mkdirs();
     NativeLibraryLoader.setCustomExtractionFolder(extractionFolder.getAbsolutePath());
 
-    NibanApplication nibanApplication = new NibanApplication();
-    nibanApplication.start();
+    ForrestApplication forrestApplication = new ForrestApplication();
+    forrestApplication.start();
   }
 
   private FilterPostProcessor filterPostProcessor;
 
   @Override
   public void simpleInitApp() {
-    System.out.println(settings);
+    System.out.println(getRenderer().getCaps());
 
-    setDisplayStatView(true);
-    setDisplayFps(true);
+    setDisplayStatView(false);
+    setDisplayFps(false);
     cam.setFrustumFar(200);
     flyCam.setMoveSpeed(7);
     viewPort.setBackgroundColor(ColorRGBA.Gray);
@@ -111,7 +111,7 @@ public class NibanApplication extends SimpleApplication {
     initializeFilters(directionalLight);
   }
 
-  private void makeToonish(Spatial spatial) {
+  protected void makeToonish(Spatial spatial) {
     if (spatial instanceof Node) {
       Node node = (Node) spatial;
       for (Spatial child : node.getChildren()) {
