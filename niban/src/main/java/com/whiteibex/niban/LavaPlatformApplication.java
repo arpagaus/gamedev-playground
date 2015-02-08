@@ -13,6 +13,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.BloomFilter;
 import com.jme3.post.filters.BloomFilter.GlowMode;
+import com.jme3.post.filters.GammaCorrectionFilter;
 import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.scene.LightNode;
 import com.jme3.scene.Node;
@@ -46,8 +47,6 @@ public class LavaPlatformApplication extends SimpleApplication {
     for (int i = 0; i < lightNodes.size(); i++) {
       LightNode lightNode = lightNodes.get(i);
 
-      System.out.println(lightNode.getName() + ": " + lightNode.getLight().getColor());
-
       lightNode.getParent().detachChild(lightNode);
       scene.removeLight(lightNode.getLight());
 
@@ -56,25 +55,30 @@ public class LavaPlatformApplication extends SimpleApplication {
       light.setDirection(lightNode.getWorldRotation().mult(Vector3f.UNIT_Y).mult(-1));
       scene.addLight(light);
 
-      lightColor = light.getColor().clone();
-      light.getColor().multLocal(0.2f + (lightNodes.size() - i) * 0.2f);
+      lightColor = light.getColor();
+      light.getColor().multLocal(0.1f + (lightNodes.size() - i) * 0.3f);
     }
 
     rootNode.attachChild(scene);
 
     AmbientLight ambientLight = new AmbientLight();
-    ambientLight.setColor(lightColor.multLocal(0.2f));
+    ambientLight.setColor(lightColor.mult(0.2f));
     rootNode.addLight(ambientLight);
 
     FilterPostProcessor filterPostProcessor = new FilterPostProcessor(assetManager);
+    filterPostProcessor.setNumSamples(Math.max(1, getContext().getSettings().getSamples()));
 
     SSAOFilter ssaoFilter = new SSAOFilter();
     ssaoFilter.setSampleRadius(1);
     filterPostProcessor.addFilter(ssaoFilter);
 
-    BloomFilter bloomFilter = new BloomFilter(GlowMode.SceneAndObjects);
+    BloomFilter bloomFilter = new BloomFilter(GlowMode.Scene);
     bloomFilter.setBloomIntensity(1);
+    bloomFilter.setDownSamplingFactor(2);
     filterPostProcessor.addFilter(bloomFilter);
+
+    GammaCorrectionFilter gammaCorrectionFilter = new GammaCorrectionFilter();
+    filterPostProcessor.addFilter(gammaCorrectionFilter);
 
     viewPort.addProcessor(filterPostProcessor);
   }
