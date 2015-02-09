@@ -3,7 +3,11 @@ package com.whiteibex.niban;
 import java.io.File;
 import java.util.List;
 
+import com.jme3.app.BasicProfilerState;
+import com.jme3.app.DebugKeysAppState;
+import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.StatsAppState;
 import com.jme3.asset.BlenderKey;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
@@ -29,13 +33,14 @@ public class LavaPlatformApplication extends SimpleApplication {
     new LavaPlatformApplication().start();
   }
 
+  public LavaPlatformApplication() {
+    super(new StatsAppState(), new FlyCamAppState(), new DebugKeysAppState(), new BasicProfilerState());
+  }
+
   @Override
   public void simpleInitApp() {
     renderManager.setPreferredLightMode(LightMode.SinglePass);
     renderManager.setSinglePassLightBatchSize(5);
-
-    setDisplayFps(false);
-    setDisplayStatView(false);
 
     BlenderKey blenderKey = new BlenderKey("scene/lava-platform.blend");
     blenderKey.setLayersToLoad(1);
